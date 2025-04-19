@@ -1,0 +1,10 @@
+spring.application.name=Fiscalapi-samples-spring
+
+# Server configuration
+server.port=8080
+
+# FiscalAPI configuration
+fiscalapi.url=https://localhost:7173
+fiscalapi.key=<apikey>
+fiscalapi.tenant=<tenant>
+fiscalapi.debug=false
