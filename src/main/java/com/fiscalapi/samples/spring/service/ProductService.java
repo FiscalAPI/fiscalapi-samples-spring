@@ -25,8 +25,8 @@ public class ProductService {
         return fiscalApiClient.getProductService().update(product);
     }
 
-    public ApiResponse<Product> getProductById(String id, boolean includeDeleted) {
-        return fiscalApiClient.getProductService().getById(id, includeDeleted);
+    public ApiResponse<Product> getProductById(String id, boolean details) {
+        return fiscalApiClient.getProductService().getById(id, details);
     }
 
     public ApiResponse<PagedList<Product>> getProducts(int page, int pageSize) {
