@@ -171,7 +171,7 @@ Este proyecto está licenciado bajo la Licencia **MPL**. Consulta el archivo [LI
 - [Sdk Java](https://github.com/FiscalAPI/fiscalapi-java)
 - [Soporte técnico](https://fiscalapi.com/contact-us)
 - [Certificados prueba](https://docs.fiscalapi.com/tax-files-info)
-
+- [Más ejemplos Java](https://github.com/FiscalAPI/fiscalapi-samples-spring/blob/main/src/main/java/com/fiscalapi/samples/spring/AllSamples.java)
 ---
 
 Desarrollado con ❤️ por [Fiscalapi](https://www.fiscalapi.com)
