@@ -41,22 +41,35 @@ El SDK de FiscalAPI para Java Spring ofrece una amplia gama de funcionalidades p
 - Gestión de credenciales y tokens de autenticación
 - Respuestas en formato estructurado para fácil procesamiento
 
-## Requisitos previos de este ejemplo:
+## Requisitos previos:
 
 - Java JDK 17 o superior
 - Maven 3.6+ o utilizar el Maven Wrapper incluido
-- Opcional: IntelliJ IDEA o Eclipse para una mejor experiencia de desarrollo
+- Opcional: VSCode, Eclipse o IntelliJ IDEA
 
 ## Configuración del entorno
 
-### 1. Clonar el repositorio
+### 1. Instalar Java JDK 17
+
+Es necesario instalar Java JDK 17 o superior para ejecutar este proyecto.
+
+#### Opción A: Descargar JDK
+Puedes descargar OpenJDK 17 desde: [Microsoft](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
+
+#### Opción B: Instalación mediante winget (Windows)
+
+```bash
+winget install Microsoft.OpenJDK.17
+```
+
+### 2. Clonar el repositorio
 
 ```bash
 git clone https://github.com/FiscalAPI/fiscalapi-samples-spring.git
 cd fiscalapi-samples-spring
 ```
 
-### 2. Configurar propiedades de la aplicación
+### 3. Configurar propiedades de la aplicación
 
 Crea un archivo `application.properties` en la carpeta `src/main/resources` basado en el archivo de ejemplo:
 
@@ -74,15 +87,42 @@ fiscalapi.tenant=tu_tenant_key
 
 Reemplaza `tu_api_key` y `tu_tenant_key` con tus [credenciales](https://docs.fiscalapi.com/credentials-info) obtenidas del portal de FiscalAPI.
 
+### 4. VSCode configurations (IntelliJ IDEA resuelve esto automaticamente)
+
+Si utilizas Visual Studio Code, crea o actualiza el archivo `.vscode/settings.json` con el siguiente contenido:
+
+```json
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.home": "C:\\jdk-17.0.14",
+    "maven.executable.path": "mvnw.cmd",
+    "java.project.referencedLibraries": [ "lib/**/*.jar"],
+    "java.compile.nullAnalysis.mode": "automatic"
+}
+```
+
+**Importante**: Ajusta la ruta `java.home` a la ubicación donde instalaste el JDK 17 en tu sistema.
+
 ## Compilar y ejecutar el proyecto
 
-### Opción 1: Usando Maven
+### VSCode variables entorno (IntelliJ IDEA resuelve esto automaticamente)
+
+Configurar el JDK temporalmente para la terminal actual de vscode:
+
+```powershell
+$env:JAVA_HOME = "C:\jdk-17.0.14"
+$env:Path += ";$env:JAVA_HOME\bin"
+```
+
+Asegúrate de ajustar la ruta a la ubicación donde instalaste el JDK 17 en tu sistema.
+
+### Opción 1: Usando Maven Wrapper
 
 #### En Windows:
 
 ```bash
-mvnw.cmd clean install
-mvnw.cmd spring-boot:run
+.\mvnw.cmd clean install
+.\mvnw.cmd spring-boot:run
 ```
 
 #### En macOS/Linux:
@@ -92,10 +132,27 @@ mvnw.cmd spring-boot:run
 ./mvnw spring-boot:run
 ```
 
-### Opción 2: Desde un IDE
+### Opción 2: Usando Maven instalado en el sistema
+
+#### En Windows:
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+#### En macOS/Linux:
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+### Opción 3: Desde un IDE
 
 1. Importa el proyecto en tu IDE favorito (IntelliJ IDEA, Eclipse, etc.)
-2. Ejecuta la clase `FiscalapiSamplesSpringApplication` como una aplicación Java
+2. Asegúrate de que el IDE esté configurado para utilizar JDK 17
+3. Ejecuta la clase `FiscalapiSamplesSpringApplication` como una aplicación Java
 
 ## Acceso a los ejemplos
 
@@ -139,10 +196,13 @@ Consulta la documentación Swagger para ver todos los endpoints disponibles y pr
 Si encuentras errores relacionados con la compilación o ejecución del proyecto:
 
 1. Verifica que estás utilizando Java JDK 17 o superior
+   - Puedes comprobar la versión con `java -version`
 2. Asegúrate de que Maven esté correctamente instalado o utiliza el Maven Wrapper incluido
+   - Puedes comprobar la versión de Maven con `mvn -version` o `.\mvnw.cmd -version`
 3. Verifica que el archivo `application.properties` exista y contenga las credenciales correctas
 4. Si utilizas una versión anterior del SDK, actualiza a la última versión en el archivo `pom.xml`
-5. Revisa la documentación oficial de FiscalAPI para más información
+5. Si estás en Windows y usas PowerShell, asegúrate de ejecutar los comandos con `.\mvnw.cmd` en lugar de solo `mvnw`
+6. Revisa la documentación oficial de FiscalAPI para más información
 
 ## 🤝 Contribuir
 
