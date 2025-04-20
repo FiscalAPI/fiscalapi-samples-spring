@@ -45,7 +45,7 @@ El SDK de FiscalAPI para Java Spring ofrece una amplia gama de funcionalidades p
 
 - Java JDK 17 o superior
 - Maven 3.6+ o utilizar el Maven Wrapper incluido
-- Opcional: VSCode, Eclipse o IntelliJ IDEA
+- Opcional: VSCode, Eclipse o altamente recomendado **IntelliJ IDEA**
 
 ## Configuración del entorno
 
