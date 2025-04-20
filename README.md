@@ -158,7 +158,6 @@ mvn spring-boot:run
 
 Una vez que la aplicación esté en ejecución, puedes acceder a:
 
-- **API REST**: Disponible en `http://localhost:8080/api/`
 - **Documentación Swagger UI**: Disponible en `http://localhost:8080/swagger-ui/index.html`
 
 ### Ejemplos disponibles
