@@ -87,7 +87,7 @@ fiscalapi.tenant=tu_tenant_key
 
 Reemplaza `tu_api_key` y `tu_tenant_key` con tus [credenciales](https://docs.fiscalapi.com/credentials-info) obtenidas del portal de FiscalAPI.
 
-### 4. VSCode configurations (IntelliJ IDEA resuelve esto automaticamente)
+### 4. VSCode settings (IntelliJ IDEA resuelve esto automaticamente)
 
 Si utilizas Visual Studio Code, crea o actualiza el archivo `.vscode/settings.json` con el siguiente contenido:
 
@@ -103,9 +103,9 @@ Si utilizas Visual Studio Code, crea o actualiza el archivo `.vscode/settings.js
 
 **Importante**: Ajusta la ruta `java.home` a la ubicación donde instalaste el JDK 17 en tu sistema.
 
-## 5. Compilar y ejecutar el proyecto
+## Compilar y ejecutar el proyecto
 
-### VSCode variables entorno (IntelliJ IDEA resuelve esto automaticamente)
+### 5. VSCode variables entorno (IntelliJ IDEA resuelve esto automaticamente)
 
 Configurar el JDK temporalmente para la terminal actual de vscode:
 
@@ -116,7 +116,7 @@ $env:Path += ";$env:JAVA_HOME\bin"
 
 Asegúrate de ajustar la ruta a la ubicación donde instalaste el JDK 17 en tu sistema.
 
-### Opción 1: Usando Maven Wrapper
+### Ejecuta Usando Maven Wrapper
 
 #### En Windows:
 
@@ -132,7 +132,7 @@ Asegúrate de ajustar la ruta a la ubicación donde instalaste el JDK 17 en tu s
 ./mvnw spring-boot:run
 ```
 
-### Opción 2: Usando Maven instalado en el sistema
+### Ejecuta Usando Maven instalado en el sistema
 
 #### En Windows:
 
@@ -148,7 +148,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-### Opción 3: Desde un IDE
+### Ejecuta: Desde un IDE
 
 1. Importa el proyecto en tu IDE favorito (IntelliJ IDEA, Eclipse, etc.)
 2. Asegúrate de que el IDE esté configurado para utilizar JDK 17
