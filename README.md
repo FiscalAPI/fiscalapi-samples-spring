@@ -103,7 +103,7 @@ Si utilizas Visual Studio Code, crea o actualiza el archivo `.vscode/settings.js
 
 **Importante**: Ajusta la ruta `java.home` a la ubicación donde instalaste el JDK 17 en tu sistema.
 
-## Compilar y ejecutar el proyecto
+## 5. Compilar y ejecutar el proyecto
 
 ### VSCode variables entorno (IntelliJ IDEA resuelve esto automaticamente)
 
