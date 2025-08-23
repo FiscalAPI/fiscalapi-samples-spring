@@ -1287,6 +1287,140 @@
 //         //endregion
 
 
+    /*******************************************************
+    * ****** DESCARGA MASIVA DE FACTURAS Y METADATOS *******
+     * *****************************************************
+    * */
+
+
+    // Obtener todos los catálogos de descarga masiva disponibles
+    // ApiResponse<List<String>> apiResponse = client.getDownloadCatalogService().getList();
+    // System.out.println(apiResponse);
+
+
+    // Listar los registros del catálogo 'SatInvoiceStatuses' de descarga masiva.
+    // ApiResponse<List<CatalogDto>> apiResponse = client.getDownloadCatalogService().listCatalog("SatInvoiceStatuses");
+    // System.out.println(apiResponse);
+
+
+    // Obtener lista paginada de reglas de descarga masiva
+    // Send request (pageNumber=1, pageSize=2)
+    // ApiResponse<PagedList<DownloadRule>> apiResponse = client.getDownloadRuleService().getList(1, 2);
+    // System.out.println(apiResponse);
+
+
+    // Obtener regla de descarga por ID
+    // Send request
+    // ApiResponse<DownloadRule> apiResponse = client.getDownloadRuleService().getById("3d5dd474-c025-4183-8ef8-b5a0d863b42c", false);
+    // System.out.println(apiResponse);
+
+
+
+    // Crear regla de descarga masiva
+    // Regla para descargar CFDI recibidos y vigentes
+    // DownloadRule request = new DownloadRule();
+    // request.setPersonId("b0c1cf6c-153a-464e-99df-5741f45d6695"); // Persona que recibió los CFDI
+    // request.setDescription("Regla descarga demo ...");
+    // request.setSatQueryTypeId("CFDI");
+    // request.setDownloadTypeId("Recibidos");
+    //   request.setSatInvoiceStatusId("Vigente");
+
+    // ApiResponse<DownloadRule> apiResponse = client.getDownloadRuleService().create(request);
+    // System.out.println(apiResponse);
+
+
+
+    // Crear regla de descarga de prueba
+    // Send request
+    // ApiResponse<DownloadRequest> apiResponse = client.getDownloadRuleService().createTestRule();
+    // System.out.println(apiResponse);
+
+
+
+    // Actualizar regla de descarga masiva
+    // Actualizar descripción
+    // DownloadRule request = new DownloadRule();
+    // request.setId("");
+    // request.setDescription("Regla descarga actualizada");
+
+    // Send request
+    // ApiResponse<DownloadRule> apiResponse = client.getDownloadRuleService().update(request);
+    // System.out.println(apiResponse);
+
+
+    // Eliminar regla de descarga masiva
+    // Send request
+    // ApiResponse<Boolean> apiResponse = client.getDownloadRuleService().delete("ac1ae13b-74e3-4774-90eb-3a050c9841d8");
+    // System.out.println(apiResponse);
+
+    // ---------------Solicitudes de descarga masiva -----------------------
+
+    // Obtener lista paginada de solicitudes de descarga masiva
+    // Send request (pageNumber=1, pageSize=2)
+    // ApiResponse<PagedList<DownloadRequest>> apiResponse = client.getDownloadRequestService().getList(1, 2);
+    // System.out.println(apiResponse);
+
+
+
+    // Obtener solicitud de descarga por ID
+    // ApiResponse<DownloadRequest> apiResponse = client.getDownloadRequestService().getById("1ac351f3-e411-43e9-92bd-e0516516ee2b", true);
+    // System.out.println(apiResponse);
+
+
+
+    // Listar XMLs por solicitud Id
+    // Obtener lista paginada de Xmls descargados asociados a una solicitud de descarga
+    // ApiResponse<PagedList<Xml>> apiResponse = client.getDownloadRequestService().getXmls("d97cc2bc-4d7a-43e4-9c6f-1771bcf1d239");
+    // System.out.println(apiResponse);
+
+
+
+    // Listar meta-items por solicitudId
+    // Obtener lista paginada de metadatos descargados asociados a una solicitud de descarga
+    // ApiResponse<PagedList<MetadataItem>> apiResponse = client.getDownloadRequestService().getMetadataItems("d97cc2bc-4d7a-43e4-9c6f-1771bcf1d239");
+    // System.out.println(apiResponse);
+
+
+
+    // Descargar paquete por solicitud ID
+    // Descargar paquete (.zip file) de una solicitud de descarga masiva
+    // ApiResponse<List<FileResponse>> apiResponse = client.getDownloadRequestService().downloadPackage("d97cc2bc-4d7a-43e4-9c6f-1771bcf1d239");
+    // System.out.println(apiResponse);
+
+
+    // Obtener SAT request por solicitud ID
+    // Descargar SAT request (.xml file) de una solicitud de descarga masiva (debug/testing)
+    // ApiResponse<FileResponse> apiResponse = client.getDownloadRequestService().downloadSatRequest("d97cc2bc-4d7a-43e4-9c6f-1771bcf1d239");
+    // System.out.println(apiResponse);
+
+
+    // Obtener SAT response por solicitud ID
+    // Descargar SAT response (.xml file) de una solicitud de descarga masiva (debug/testing)
+    // ApiResponse<FileResponse> apiResponse = client.getDownloadRequestService().downloadSatResponse("d97cc2bc-4d7a-43e4-9c6f-1771bcf1d239");
+    // System.out.println(apiResponse);
+
+
+    // Crear solicitud de descarga masiva
+    // Crear solicitud para descargar facturas de los últimos 5 días
+    // DownloadRequest request = new DownloadRequest();
+    // request.setDownloadRuleId("a339a292-37fe-422e-a28a-f93e6025c72f");
+    // request.setDownloadRequestTypeId("Manual");
+    // request.setStartDate(LocalDateTime.now().minusDays(5));
+    // request.setEndDate(LocalDateTime.now());
+
+    // ApiResponse<DownloadRequest> apiResponse = client.getDownloadRequestService().create(request);
+    // System.out.println(apiResponse);
+
+
+    // Eliminar solicitud de descarga masiva
+    // ApiResponse<Boolean> apiResponse = client.getDownloadRequestService().delete("097e1674-09bc-433b-829b-19f9661420d3");
+    // System.out.println(apiResponse);
+
+    // Buscar solicitud de descarga masiva por fecha de creación
+    // ApiResponse<List<DownloadRequest>> apiResponse = client.getDownloadRequestService().search(LocalDate.now());
+    // System.out.println(apiResponse);
+
+
 
 
 

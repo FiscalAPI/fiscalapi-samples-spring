@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.fiscalapi</groupId>
             <artifactId>fiscalapi</artifactId>
-            <version>4.0.141</version>
+            <version>4.0.272</version>
         </dependency>
 
         <dependency>
