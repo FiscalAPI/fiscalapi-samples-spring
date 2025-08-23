@@ -12,38 +12,48 @@ El proyecto consiste en una aplicación Spring Boot que contiene diversos ejempl
 
 El SDK de FiscalAPI para Java Spring ofrece una amplia gama de funcionalidades para la facturación electrónica en México:
 
-### Facturación CFDI 4.0
-- Timbrado de facturas de ingreso
-- Timbrado de notas de crédito (facturas de egreso)
-- Timbrado de complementos de pago
-- Consulta del estatus de facturas en el SAT
-- Cancelación de facturas
-- Generación de archivos PDF de las facturas
-- Personalización de logos y colores en los PDF
-- Envío de facturas por correo electrónico
-- Descarga de archivos XML
+## 📋 Facturación CFDI 4.0
+- **Soporte completo para CFDI 4.0** con todas las especificaciones oficiales
+- **Timbrado de facturas de ingreso** con validación automática
+- **Timbrado de notas de crédito** (facturas de egreso)
+- **Timbrado de complementos de pago** en MXN, USD y EUR.
+- **Consulta del estatus de facturas** en el SAT en tiempo real
+- **Cancelación de facturas** 
+- **Generación de archivos PDF** de las facturas con formato profesional
+- **Personalización de logos y colores** en los PDF generados
+- **Envío de facturas por correo electrónico** automatizado
+- **Descarga de archivos XML** con estructura completa
+- **Almacenamiento y recuperación** de facturas por 5 años.
+- Dos [modos de operación](https://docs.fiscalapi.com/modes-of-operation): **Por valores** o **Por referencias**
+- [Ejemplos en Python](https://github.com/FiscalAPI/fiscalapi-samples-python)
+  
+## 📥 Descarga Masiva
+- **Acceso a catálogos de descarga masiva** del SAT
+- **Descarga de CFDI y Metadatos** en lotes grandes
+- **Descarga masiva XML** con filtros personalizados
+- **Reglas de descarga automática por RFC** 
+- **Solicitudes de descarga** via API y Dashboard.
+- **Automatización de solicitudes de descarga**
 
-### Gestión de personas
-- Administración de personas (emisores, receptores, clientes, usuarios, etc)
-- Gestión de certificados CSD (subir archivos .cer y .key a fiscalapi)
-- Configuración de datos fiscales (RFC, domicilio fiscal, régimen fiscal)
+## 👥 Gestión de Personas
+- **Administración de personas** (emisores, receptores, clientes, usuarios, etc.)
+- **Gestión de certificados CSD y FIEL** (subir archivos .cer y .key a FiscalAPI)
+- **Configuración de datos fiscales** (RFC, domicilio fiscal, régimen fiscal)
 
-### Gestion de productos/servicios
-- Gestión de productos y servicios
-- Administración de impuestos aplicables (IVA, ISR, IEPS)
+## 🛍️ Gestión de Productos/Servicios
+- **Gestión de productos y servicios** con catálogo personalizable
+- **Administración de impuestos aplicables** (IVA, ISR, IEPS)
 
-### Consulta de catalogos SAT
-- Consulta en catálogos oficiales del SAT
-- Búsqueda de información en catálogos del SAT
-
-### Integración y configuración
-- Configuración de ambiente (pruebas o producción)
-- Gestión de credenciales y tokens de autenticación
-- Respuestas en formato estructurado para fácil procesamiento
+## 📚 Consulta de Catálogos SAT
+- **Consulta en catálogos oficiales del SAT** actualizados
+- **Consulta en catálogos oficiales de Descarga masiva del SAT** actualizados
+- **Búsqueda de información** en catálogos del SAT con filtros avanzados
+- **Acceso y búsqueda** en catálogos completos
+  
 
 ## Requisitos previos:
 
-- Java JDK 17 o superior
+- Java 8 o superior para el SDK
 - Maven 3.6+ o utilizar el Maven Wrapper incluido
 - Opcional: VSCode, Eclipse o altamente recomendado **IntelliJ IDEA**
 
@@ -51,7 +61,7 @@ El SDK de FiscalAPI para Java Spring ofrece una amplia gama de funcionalidades p
 
 ### 1. Instalar Java JDK 17
 
-Es necesario instalar Java JDK 17 o superior para ejecutar este proyecto.
+Es necesario instalar Java JDK 17 o superior para este proyecto.
 
 #### Opción A: Descargar JDK
 Puedes descargar OpenJDK 17 desde: [Microsoft](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
