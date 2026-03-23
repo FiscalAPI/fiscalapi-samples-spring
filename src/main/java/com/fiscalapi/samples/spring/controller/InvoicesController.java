@@ -35,9 +35,14 @@
 package com.fiscalapi.samples.spring.controller;
 
 
+import com.fiscalapi.OptUtil;
 import com.fiscalapi.common.ApiResponse;
 import com.fiscalapi.common.PagedList;
 import com.fiscalapi.models.invoicing.*;
+import com.fiscalapi.models.invoicing.billOfLading.*;
+import com.fiscalapi.models.invoicing.paymentComplement.InvoicePayment;
+import com.fiscalapi.models.invoicing.paymentComplement.PaidInvoice;
+import com.fiscalapi.models.invoicing.paymentComplement.PaidInvoiceTax;
 import com.fiscalapi.services.FiscalApiClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,6 +50,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +66,9 @@ public class InvoicesController {
     private String base64Key = "MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIAgEAAoIBAQACAggAMBQGCCqGSIb3DQMHBAgwggS9AgEAMASCBMh4EHl7aNSCaMDA1VlRoXCZ5UUmqErAbucRBAKNQXH8t8gVCl/ItHMI2hMJ76QOECOqEi1Y89cDpegDvh/INXyMsXbzi87tfFzgq1O+9ID6aPWGg+bNGADXyXxDVdy7Nq/SCdoXvo66MTYwq8jyJeUHDHEGMVBcmZpD44VJCvLBxDcvByuevP4Wo2NKqJCwK+ecAdZc/8Rvd947SjbMHuS8BppfQWARVUqA5BLOkTAHNv6tEk/hncC7O2YOGSShart8fM8dokgGSyewHVFe08POuQ+WDHeVpvApH/SP29rwktSoiHRoL6dK+F2YeEB5SuFW9LQgYCutjapmUP/9TC3Byro9Li6UrvQHxNmgMFGQJSYjFdqlGjLibfuguLp7pueutbROoZaSxU8HqlfYxLkpJUxUwNI1ja/1t3wcivtWknVXBd13R06iVfU1HGe8Kb4u5il4a4yP4p7VT4RE3b1SBLJeG+BxHiE8gFaaKcX/Cl6JV14RPTvk/6VnAtEQ66qHJex21KKuiJo2JoOmDXVHmvGQlWXNjYgoPx28Xd5WsofL+n7HDR2Ku8XgwJw6IXBJGuoday9qWN9v/k7DGlNGB6Sm4gdVUmycMP6EGhB1vFTiDfOGQO42ywmcpKoMETPVQ5InYKE0xAOckgcminDgxWjtUHjBDPEKifEjYudPwKmR6Cf4ZdGvUWwY/zq9pPAC9bu423KeBCnSL8AQ4r5SVsW6XG0njamwfNjpegwh/YG7sS7sDtZ8gi7r6tZYjsOqZlCYU0j7QTBpuQn81Yof2nQRCFxhRJCeydmIA8+z0nXrcElk7NDPk4kYQS0VitJ2qeQYNENzGBglROkCl2y6GlxAG80IBtReCUp/xOSdlwDR0eim+SNkdStvmQM5IcWBuDKwGZc1A4v/UoLl7niV9fpl4X6bUX8lZzY4gidJOafoJ30VoY/lYGkrkEuz3GpbbT5v8fF3iXVRlEqhlpe8JSGu7Rd2cPcJSkQ1Cuj/QRhHPhFMF2KhTEf95c9ZBKI8H7SvBi7eLXfSW2Y0ve6vXBZKyjK9whgCU9iVOsJjqRXpAccaWOKi420CjmS0+uwj/Xr2wLZhPEjBA/G6Od30+eG9mICmbp/5wAGhK/ZxCT17ZETyFmOMo49jl9pxdKocJNuzMrLpSz7/g5Jwp8+y8Ck5YP7AX0R/dVA0t37DO7nAbQT5XVSYpMVh/yvpYJ9WR+tb8Yg1h2lERLR2fbuhQRcwmisZR2W3Sr2b7hX9MCMkMQw8y2fDJrzLrqKqkHcjvnI/TdzZW2MzeQDoBBb3fmgvjYg07l4kThS73wGX992w2Y+a1A2iirSmrYEm9dSh16JmXa8boGQAONQzQkHh7vpw0IBs9cnvqO1QLB1GtbBztUBXonA4TxMKLYZkVrrd2RhrYWMsDp7MpC4M0p/DA3E/qscYwq1OpwriewNdx6XXqMZbdUNqMP2viBY2VSGmNdHtVfbN/rnaeJetFGX7XgTVYD7wDq8TW9yseCK944jcT+y/o0YiT9j3OLQ2Ts0LDTQskpJSxRmXEQGy3NBDOYFTvRkcGJEQJItuol8NivJN1H9LoLIUAlAHBZxfHpUYx66YnP4PdTdMIWH+nxyekKPFfAT7olQ="; // Reemplaza con tu clave privada en base64
     private String password = "12345678a"; // Reemplaza con la contraseña de tu clave privada de los sellos del SAT.
     private String base64Logo = "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";
+
+    private String escuelaKemperBase64Cert = "MIIFsDCCA5igAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDM0MTYwDQYJKoZIhvcNAQELBQAwggErMQ8wDQYDVQQDDAZBQyBVQVQxLjAsBgNVBAoMJVNFUlZJQ0lPIERFIEFETUlOSVNUUkFDSU9OIFRSSUJVVEFSSUExGjAYBgNVBAsMEVNBVC1JRVMgQXV0aG9yaXR5MSgwJgYJKoZIhvcNAQkBFhlvc2Nhci5tYXJ0aW5lekBzYXQuZ29iLm14MR0wGwYDVQQJDBQzcmEgY2VycmFkYSBkZSBjYWxpejEOMAwGA1UEEQwFMDYzNzAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBDSVVEQUQgREUgTUVYSUNPMREwDwYDVQQHDAhDT1lPQUNBTjERMA8GA1UELRMIMi41LjQuNDUxJTAjBgkqhkiG9w0BCQITFnJlc3BvbnNhYmxlOiBBQ0RNQS1TQVQwHhcNMjMwNTE4MTE0MzUxWhcNMjcwNTE4MTE0MzUxWjCB1zEnMCUGA1UEAxMeRVNDVUVMQSBLRU1QRVIgVVJHQVRFIFNBIERFIENWMScwJQYDVQQpEx5FU0NVRUxBIEtFTVBFUiBVUkdBVEUgU0EgREUgQ1YxJzAlBgNVBAoTHkVTQ1VFTEEgS0VNUEVSIFVSR0FURSBTQSBERSBDVjElMCMGA1UELRMcRUtVOTAwMzE3M0M5IC8gVkFEQTgwMDkyN0RKMzEeMBwGA1UEBRMVIC8gVkFEQTgwMDkyN0hTUlNSTDA1MRMwEQYDVQQLEwpTdWN1cnNhbCAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtmecO6n2GS0zL025gbHGQVxznPDICoXzR2uUngz4DqxVUC/w9cE6FxSiXm2ap8Gcjg7wmcZfm85EBaxCx/0J2u5CqnhzIoGCdhBPuhWQnIh5TLgj/X6uNquwZkKChbNe9aeFirU/JbyN7Egia9oKH9KZUsodiM/pWAH00PCtoKJ9OBcSHMq8Rqa3KKoBcfkg1ZrgueffwRLws9yOcRWLb02sDOPzGIm/jEFicVYt2Hw1qdRE5xmTZ7AGG0UHs+unkGjpCVeJ+BEBn0JPLWVvDKHZAQMj6s5Bku35+d/MyATkpOPsGT/VTnsouxekDfikJD1f7A1ZpJbqDpkJnss3vQIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQsFAAOCAgEAFaUgj5PqgvJigNMgtrdXZnbPfVBbukAbW4OGnUhNrA7SRAAfv2BSGk16PI0nBOr7qF2mItmBnjgEwk+DTv8Zr7w5qp7vleC6dIsZFNJoa6ZndrE/f7KO1CYruLXr5gwEkIyGfJ9NwyIagvHHMszzyHiSZIA850fWtbqtythpAliJ2jF35M5pNS+YTkRB+T6L/c6m00ymN3q9lT1rB03YywxrLreRSFZOSrbwWfg34EJbHfbFXpCSVYdJRfiVdvHnewN0r5fUlPtR9stQHyuqewzdkyb5jTTw02D2cUfL57vlPStBj7SEi3uOWvLrsiDnnCIxRMYJ2UA2ktDKHk+zWnsDmaeleSzonv2CHW42yXYPCvWi88oE1DJNYLNkIjua7MxAnkNZbScNw01A6zbLsZ3y8G6eEYnxSTRfwjd8EP4kdiHNJftm7Z4iRU7HOVh79/lRWB+gd171s3d/mI9kte3MRy6V8MMEMCAnMboGpaooYwgAmwclI2XZCczNWXfhaWe0ZS5PmytD/GDpXzkX0oEgY9K/uYo5V77NdZbGAjmyi8cE2B2ogvyaN2XfIInrZPgEffJ4AB7kFA2mwesdLOCh0BLD9itmCve3A1FGR4+stO2ANUoiI3w3Tv2yQSg4bjeDlJ08lXaaFCLW2peEXMXjQUk7fmpb5MNuOUTW6BE=";
+    private String escuelaKemperBase64Key = "MIIFDjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQIAgEAAoIBAQACAggAMBQGCCqGSIb3DQMHBAgwggS/AgEAMASCBMh4EHl7aNSCaMDA1VlRoXCZ5UUmqErAbucoZQObOaLUEm+I+QZ7Y8Giupo+F1XWkLvAsdk/uZlJcTfKLJyJbJwsQYbSpLOCLataZ4O5MVnnmMbfG//NKJn9kSMvJQZhSwAwoGLYDm1ESGezrvZabgFJnoQv8Si1nAhVGTk9FkFBesxRzq07dmZYwFCnFSX4xt2fDHs1PMpQbeq83aL/PzLCce3kxbYSB5kQlzGtUYayiYXcu0cVRu228VwBLCD+2wTDDoCmRXtPesgrLKUR4WWWb5N2AqAU1mNDC+UEYsENAerOFXWnmwrcTAu5qyZ7GsBMTpipW4Dbou2yqQ0lpA/aB06n1kz1aL6mNqGPaJ+OqoFuc8Ugdhadd+MmjHfFzoI20SZ3b2geCsUMNCsAd6oXMsZdWm8lzjqCGWHFeol0ik/xHMQvuQkkeCsQ28PBxdnUgf7ZGer+TN+2ZLd2kvTBOk6pIVgy5yC6cZ+o1Tloql9hYGa6rT3xcMbXlW+9e5jM2MWXZliVW3ZhaPjptJFDbIfWxJPjz4QvKyJk0zok4muv13Iiwj2bCyefUTRz6psqI4cGaYm9JpscKO2RCJN8UluYGbbWmYQU+Int6LtZj/lv8p6xnVjWxYI+rBPdtkpfFYRp+MJiXjgPw5B6UGuoruv7+vHjOLHOotRo+RdjZt7NqL9dAJnl1Qb2jfW6+d7NYQSI/bAwxO0sk4taQIT6Gsu/8kfZOPC2xk9rphGqCSS/4q3Os0MMjA1bcJLyoWLp13pqhK6bmiiHw0BBXH4fbEp4xjSbpPx4tHXzbdn8oDsHKZkWh3pPC2J/nVl0k/yF1KDVowVtMDXE47k6TGVcBoqe8PDXCG9+vjRpzIidqNo5qebaUZu6riWMWzldz8x3Z/jLWXuDiM7/Yscn0Z2GIlfoeyz+GwP2eTdOw9EUedHjEQuJY32bq8LICimJ4Ht+zMJKUyhwVQyAER8byzQBwTYmYP5U0wdsyIFitphw+/IH8+v08Ia1iBLPQAeAvRfTTIFLCs8foyUrj5Zv2B/wTYIZy6ioUM+qADeXyo45uBLLqkN90Rf6kiTqDld78NxwsfyR5MxtJLVDFkmf2IMMJHTqSfhbi+7QJaC11OOUJTD0v9wo0X/oO5GvZhe0ZaGHnm9zqTopALuFEAxcaQlc4R81wjC4wrIrqWnbcl2dxiBtD73KW+wcC9ymsLf4I8BEmiN25lx/OUc1IHNyXZJYSFkEfaxCEZWKcnbiyf5sqFSSlEqZLc4lUPJFAoP6s1FHVcyO0odWqdadhRZLZC9RCzQgPlMRtji/OXy5phh7diOBZv5UYp5nb+MZ2NAB/eFXm2JLguxjvEstuvTDmZDUb6Uqv++RdhO5gvKf/AcwU38ifaHQ9uvRuDocYwVxZS2nr9rOwZ8nAh+P2o4e0tEXjxFKQGhxXYkn75H3hhfnFYjik/2qunHBBZfcdG148MaNP6DjX33M238T9Zw/GyGx00JMogr2pdP4JAErv9a5yt4YR41KGf8guSOUbOXVARw6+ybh7+meb7w4BeTlj3aZkv8tVGdfIt3lrwVnlbzhLjeQY6PplKp3/a5Kr5yM0T4wJoKQQ6v3vSNmrhpbuAtKxpMILe8CQoo=";
 
 
     private final FiscalApiClient fiscalApi;
@@ -145,20 +154,20 @@ public class InvoicesController {
         InvoiceItem item = new InvoiceItem();
 
         item.setItemCode("01010101");
-        item.setQuantity(9.5);
+        item.setQuantity(new BigDecimal("9.5"));
         item.setUnitOfMeasurementCode("E48");
         item.setDescription("Invoicing software as a service.");
-        item.setUnitPrice(3587.75);
+        item.setUnitPrice(new BigDecimal("3587.75"));
         item.setTaxObjectCode("02");
         item.setItemSku("7506022301697");
-        item.setDiscount(255.85);
+        item.setDiscount(new BigDecimal("255.85"));
 
         // impuestos del producto
         List<ItemTax> taxes = new ArrayList<>();
         ItemTax iva = new ItemTax();
         iva.setTaxCode("002"); // iva
         iva.setTaxTypeCode("Tasa"); // Tasa
-        iva.setTaxRate("0.160000"); // 16%
+        iva.setTaxRate(new BigDecimal("0.160000")); // 16%
         iva.setTaxFlagCode("T"); // T = Traslado | R = Retención
 
         //Agrega iva a los impuestos
@@ -232,13 +241,13 @@ public class InvoicesController {
         List<InvoiceItem> items = new ArrayList<>();
         InvoiceItem item = new InvoiceItem();
         item.setItemCode("01010101");
-        item.setQuantity(9.5);
+        item.setQuantity(new BigDecimal("9.5"));
         item.setUnitOfMeasurementCode("E48");
         item.setDescription("Invoicing software as a service");
-        item.setUnitPrice(3587.75);
+        item.setUnitPrice(new BigDecimal("3587.75"));
         item.setTaxObjectCode("02");
         item.setItemSku("7506022301697");
-        item.setDiscount(255.85);
+        item.setDiscount(new BigDecimal("255.85"));
 
         // Impuestos del producto (IVA exento)
         List<ItemTax> taxes = new ArrayList<>();
@@ -312,20 +321,20 @@ public class InvoicesController {
         List<InvoiceItem> items = new ArrayList<>();
         InvoiceItem item = new InvoiceItem();
         item.setItemCode("01010101");
-        item.setQuantity(9.5);
+        item.setQuantity(new BigDecimal("9.5"));
         item.setUnitOfMeasurementCode("E48");
         item.setDescription("Invoicing software as a service");
-        item.setUnitPrice(3587.75);
+        item.setUnitPrice(new BigDecimal("3587.75"));
         item.setTaxObjectCode("02");
         item.setItemSku("7506022301697");
-        item.setDiscount(255.85);
+        item.setDiscount(new BigDecimal("255.85"));
 
         // Impuestos del producto (IVA tasa cero)
         List<ItemTax> taxes = new ArrayList<>();
         ItemTax tax = new ItemTax();
         tax.setTaxCode("002");
         tax.setTaxTypeCode("Tasa");
-        tax.setTaxRate("0.000000");
+        tax.setTaxRate(new BigDecimal("0.000000"));
         tax.setTaxFlagCode("T"); // T = Traslado | R = Retención
         taxes.add(tax);
         item.setItemTaxes(taxes);
@@ -368,8 +377,8 @@ public class InvoicesController {
         List<InvoiceItem> items = new ArrayList<>();
         InvoiceItem item = new InvoiceItem();
         item.setId("c3ce7210-cfcb-4307-aae7-fd18a24f0e82");
-        item.setQuantity(2.0);
-        item.setDiscount(255.85);
+        item.setQuantity(new BigDecimal("2.0"));
+        item.setDiscount(new BigDecimal("255.85"));
         items.add(item);
         invoice.setItems(items);
 
@@ -446,20 +455,20 @@ public class InvoicesController {
         InvoiceItem item = new InvoiceItem();
 
         item.setItemCode("01010101");
-        item.setQuantity(1.0);
+        item.setQuantity(new BigDecimal("1.0"));
         item.setUnitOfMeasurementCode("ACT");
         item.setDescription("Venta");
-        item.setUnitPrice(1230.00);
+        item.setUnitPrice(new BigDecimal("1230.00"));
         item.setTaxObjectCode("02");
         item.setItemSku("venta0001");
-        item.setDiscount(255.85);
+        item.setDiscount(new BigDecimal("255.85"));
 
         // Impuestos del producto
         List<ItemTax> taxes = new ArrayList<>();
         ItemTax iva = new ItemTax();
         iva.setTaxCode("002"); // IVA
         iva.setTaxTypeCode("Tasa"); // Tasa
-        iva.setTaxRate("0.160000"); // 16%
+        iva.setTaxRate(new BigDecimal("0.160000")); // 16%
         iva.setTaxFlagCode("T"); // T = Traslado | R = Retención
 
         // Agrega iva a los impuestos
@@ -516,10 +525,10 @@ public class InvoicesController {
         InvoiceItem item = new InvoiceItem();
 
         item.setItemCode("01010101");
-        item.setQuantity(1.0);
+        item.setQuantity(new BigDecimal("1.0"));
         item.setUnitOfMeasurementCode("ACT");
         item.setDescription("Venta");
-        item.setUnitPrice(1230.00);
+        item.setUnitPrice(new BigDecimal("1230.00"));
         item.setTaxObjectCode("02");
         item.setItemSku("venta0001");
 
@@ -528,7 +537,7 @@ public class InvoicesController {
         ItemTax iva = new ItemTax();
         iva.setTaxCode("002"); // IVA
         iva.setTaxTypeCode("Tasa"); // Tasa
-        iva.setTaxRate("0.160000"); // 16%
+        iva.setTaxRate(new BigDecimal("0.160000")); // 16%
         iva.setTaxFlagCode("T"); // T = Traslado | R = Retención
 
         // Agrega iva a los impuestos
@@ -614,10 +623,10 @@ public class InvoicesController {
         List<InvoiceItem> items = new ArrayList<>();
         InvoiceItem item = new InvoiceItem();
         item.setItemCode("01010101");
-        item.setQuantity(0.5);
+        item.setQuantity(new BigDecimal("0.5"));
         item.setUnitOfMeasurementCode("E48");
         item.setDescription("Invoicing software as a service");
-        item.setUnitPrice(3587.75);
+        item.setUnitPrice(new BigDecimal("3587.75"));
         item.setTaxObjectCode("02");
         item.setItemSku("7506022301697");
 
@@ -626,7 +635,7 @@ public class InvoicesController {
         ItemTax tax = new ItemTax();
         tax.setTaxCode("002");
         tax.setTaxTypeCode("Tasa");
-        tax.setTaxRate("0.160000");
+        tax.setTaxRate(new BigDecimal("0.160000"));
         tax.setTaxFlagCode("T"); // T = Traslado | R = Retención
         taxes.add(tax);
         item.setItemTaxes(taxes);
@@ -677,7 +686,7 @@ public class InvoicesController {
         List<InvoiceItem> items = new ArrayList<>();
         InvoiceItem item = new InvoiceItem();
         item.setId("114a4be5-fb65-40b2-a762-ff0c55c6ebfa");
-        item.setQuantity(0.5);
+        item.setQuantity(new BigDecimal("0.5"));
         items.add(item);
         invoice.setItems(items);
 
@@ -734,25 +743,12 @@ public class InvoicesController {
         recipient.setEmail("someone@somewhere.com");
         invoice.setRecipient(recipient);
 
-        // Ítem (Complemento de pago, se utiliza un ítem para reflejar el pago)
-        List<InvoiceItem> items = new ArrayList<>();
-        InvoiceItem item = new InvoiceItem();
-        item.setItemCode("84111506");
-        item.setQuantity(1.0);
-        item.setUnitOfMeasurementCode("ACT");
-        item.setDescription("Pago");
-        item.setUnitPrice(0.0);
-        item.setTaxObjectCode("01");
-        items.add(item);
-        invoice.setItems(items);
-
-        // Pagos
-        List<InvoicePayment> payments = new ArrayList<>();
+        // Complemento de pago
         InvoicePayment payment = new InvoicePayment();
         payment.setPaymentDate(LocalDateTime.now());
         payment.setPaymentFormCode("28");
         payment.setCurrencyCode("MXN");
-        payment.setAmount(11600.00);
+        payment.setAmount(new BigDecimal("11600.00"));
         payment.setSourceBankTin("BSM970519DU8");
         payment.setSourceBankAccount("1234567891012131");
         payment.setTargetBankTin("BBA830831LJ2");
@@ -766,10 +762,10 @@ public class InvoicesController {
         paidInvoice.setNumber("1501");
         paidInvoice.setCurrencyCode("MXN");
         paidInvoice.setPartialityNumber(1);
-        paidInvoice.setSubTotal(10000.0);
-        paidInvoice.setPreviousBalance(11600.00);
-        paidInvoice.setPaymentAmount(11600.00);
-        paidInvoice.setRemainingBalance(0.0);
+        paidInvoice.setSubTotal(new BigDecimal("10000.0"));
+        paidInvoice.setPreviousBalance(new BigDecimal("11600.00"));
+        paidInvoice.setPaymentAmount(new BigDecimal("11600.00"));
+        paidInvoice.setRemainingBalance(new BigDecimal("0.0"));
         paidInvoice.setTaxObjectCode("02");
 
         // Impuestos de la factura pagada
@@ -777,7 +773,7 @@ public class InvoicesController {
         PaidInvoiceTax paidTax = new PaidInvoiceTax();
         paidTax.setTaxCode("002");
         paidTax.setTaxTypeCode("Tasa");
-        paidTax.setTaxRate("0.160000");
+        paidTax.setTaxRate(new BigDecimal("0.160000"));
         paidTax.setTaxFlagCode("T"); // T = Traslado | R = Retención
         paidInvoiceTaxes.add(paidTax);
 
@@ -785,8 +781,9 @@ public class InvoicesController {
         paidInvoices.add(paidInvoice);
         payment.setPaidInvoices(paidInvoices);
 
-        payments.add(payment);
-        invoice.setPayments(payments);
+        Complement complement = new Complement();
+        complement.setPayment(payment);
+        invoice.setComplement(complement);
 
         ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
         return apiResponse;
@@ -817,13 +814,12 @@ public class InvoicesController {
         recipient.setId("bef56254-0892-4558-95c3-f9c8729e4b0e");
         invoice.setRecipient(recipient);
 
-        // Pagos
-        List<InvoicePayment> payments = new ArrayList<>();
+        // Complemento de pago
         InvoicePayment payment = new InvoicePayment();
-        payment.setPaymentDate(LocalDateTime.parse("2024-06-03T14:44:56"));
+        payment.setPaymentDate(OptUtil.parseLocalDateTime("2024-06-03T14:44:56"));
         payment.setPaymentFormCode("28");
         payment.setCurrencyCode("MXN");
-        payment.setAmount(11600.00);
+        payment.setAmount(new BigDecimal("11600.00"));
         payment.setSourceBankTin("BSM970519DU8");
         payment.setSourceBankAccount("1234567891012131");
         payment.setTargetBankTin("BBA830831LJ2");
@@ -837,10 +833,10 @@ public class InvoicesController {
         paidInvoice.setNumber("1501");
         paidInvoice.setCurrencyCode("MXN");
         paidInvoice.setPartialityNumber(1);
-        paidInvoice.setSubTotal(10000.0);
-        paidInvoice.setPreviousBalance(11600.00);
-        paidInvoice.setPaymentAmount(11600.00);
-        paidInvoice.setRemainingBalance(0.0);
+        paidInvoice.setSubTotal(new BigDecimal("10000.0"));
+        paidInvoice.setPreviousBalance(new BigDecimal("11600.00"));
+        paidInvoice.setPaymentAmount(new BigDecimal("11600.00"));
+        paidInvoice.setRemainingBalance(new BigDecimal("0.0"));
         paidInvoice.setTaxObjectCode("02");
 
         // Impuestos de la factura pagada
@@ -848,7 +844,7 @@ public class InvoicesController {
         PaidInvoiceTax paidTax = new PaidInvoiceTax();
         paidTax.setTaxCode("002");
         paidTax.setTaxTypeCode("Tasa");
-        paidTax.setTaxRate("0.160000");
+        paidTax.setTaxRate(new BigDecimal("0.160000"));
         paidTax.setTaxFlagCode("T");
         paidInvoiceTaxes.add(paidTax);
 
@@ -856,8 +852,9 @@ public class InvoicesController {
         paidInvoices.add(paidInvoice);
         payment.setPaidInvoices(paidInvoices);
 
-        payments.add(payment);
-        invoice.setPayments(payments);
+        Complement complement = new Complement();
+        complement.setPayment(payment);
+        invoice.setComplement(complement);
 
         ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
         return apiResponse;
@@ -913,26 +910,13 @@ public class InvoicesController {
         recipient.setEmail("someone@somewhere.com");
         invoice.setRecipient(recipient);
 
-        // Ítem (Complemento de pago)
-        List<InvoiceItem> items = new ArrayList<>();
-        InvoiceItem item = new InvoiceItem();
-        item.setItemCode("84111506");
-        item.setQuantity(1.0);
-        item.setUnitOfMeasurementCode("ACT");
-        item.setDescription("Pago");
-        item.setUnitPrice(0.0);
-        item.setTaxObjectCode("01");
-        items.add(item);
-        invoice.setItems(items);
-
-        // Pagos
-        List<InvoicePayment> payments = new ArrayList<>();
+        // Complemento de pago
         InvoicePayment payment = new InvoicePayment();
-        payment.setPaymentDate(LocalDateTime.parse("2024-06-03T14:44:56"));
+        payment.setPaymentDate(OptUtil.parseLocalDateTime("2024-06-03T14:44:56"));
         payment.setPaymentFormCode("28");
         payment.setCurrencyCode("USD");
-        payment.setExchangeRate(20.64);
-        payment.setAmount(5.62);
+        payment.setExchangeRate(new BigDecimal("20.64"));
+        payment.setAmount(new BigDecimal("5.62"));
         payment.setSourceBankTin("BSM970519DU8");
         payment.setSourceBankAccount("1234567891012131");
         payment.setTargetBankTin("BBA830831LJ2");
@@ -945,12 +929,12 @@ public class InvoicesController {
         paidInvoice.setSeries("F");
         paidInvoice.setNumber("2");
         paidInvoice.setCurrencyCode("MXN");
-        paidInvoice.setEquivalence(20.64);
+        paidInvoice.setEquivalence(new BigDecimal("20.64"));
         paidInvoice.setPartialityNumber(1);
-        paidInvoice.setSubTotal(100.00);
-        paidInvoice.setPreviousBalance(116.00);
-        paidInvoice.setPaymentAmount(116.00);
-        paidInvoice.setRemainingBalance(0.0);
+        paidInvoice.setSubTotal(new BigDecimal("100.00"));
+        paidInvoice.setPreviousBalance(new BigDecimal("116.00"));
+        paidInvoice.setPaymentAmount(new BigDecimal("116.00"));
+        paidInvoice.setRemainingBalance(new BigDecimal("0.0"));
         paidInvoice.setTaxObjectCode("02");
 
         // Impuestos de la factura pagada
@@ -959,21 +943,21 @@ public class InvoicesController {
         PaidInvoiceTax tax1 = new PaidInvoiceTax();
         tax1.setTaxCode("002");
         tax1.setTaxTypeCode("Tasa");
-        tax1.setTaxRate("0.160000");
+        tax1.setTaxRate(new BigDecimal("0.160000"));
         tax1.setTaxFlagCode("T");
         paidInvoiceTaxes.add(tax1);
 
         PaidInvoiceTax tax2 = new PaidInvoiceTax();
         tax2.setTaxCode("002");
         tax2.setTaxTypeCode("Tasa");
-        tax2.setTaxRate("0.106667");
+        tax2.setTaxRate(new BigDecimal("0.106667"));
         tax2.setTaxFlagCode("R");
         paidInvoiceTaxes.add(tax2);
 
         PaidInvoiceTax tax3 = new PaidInvoiceTax();
         tax3.setTaxCode("001");
         tax3.setTaxTypeCode("Tasa");
-        tax3.setTaxRate("0.100000");
+        tax3.setTaxRate(new BigDecimal("0.100000"));
         tax3.setTaxFlagCode("R");
         paidInvoiceTaxes.add(tax3);
 
@@ -981,8 +965,9 @@ public class InvoicesController {
         paidInvoices.add(paidInvoice);
         payment.setPaidInvoices(paidInvoices);
 
-        payments.add(payment);
-        invoice.setPayments(payments);
+        Complement complement = new Complement();
+        complement.setPayment(payment);
+        invoice.setComplement(complement);
 
         ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
         return apiResponse;
@@ -1037,25 +1022,12 @@ public class InvoicesController {
         recipient.setEmail("someone@somewhere.com");
         invoice.setRecipient(recipient);
 
-        // Ítem (Complemento de pago)
-        List<InvoiceItem> items = new ArrayList<>();
-        InvoiceItem item = new InvoiceItem();
-        item.setItemCode("84111506");
-        item.setQuantity(1.0);
-        item.setUnitOfMeasurementCode("ACT");
-        item.setDescription("Pago");
-        item.setUnitPrice(0.0);
-        item.setTaxObjectCode("01");
-        items.add(item);
-        invoice.setItems(items);
-
-        // Pagos
-        List<InvoicePayment> payments = new ArrayList<>();
+        // Complemento de pago
         InvoicePayment payment = new InvoicePayment();
-        payment.setPaymentDate(LocalDateTime.parse("2024-06-03T14:44:56"));
+        payment.setPaymentDate(OptUtil.parseLocalDateTime("2024-06-03T14:44:56"));
         payment.setPaymentFormCode("28");
         payment.setCurrencyCode("MXN");
-        payment.setAmount(921.23);
+        payment.setAmount(new BigDecimal("921.23"));
         payment.setSourceBankTin("BSM970519DU8");
         payment.setSourceBankAccount("1234567891012131");
         payment.setTargetBankTin("BBA830831LJ2");
@@ -1068,12 +1040,12 @@ public class InvoicesController {
         paidInvoice.setSeries("F");
         paidInvoice.setNumber("2");
         paidInvoice.setCurrencyCode("USD");
-        paidInvoice.setEquivalence(0.045331);
+        paidInvoice.setEquivalence(new BigDecimal("0.045331"));
         paidInvoice.setPartialityNumber(1);
-        paidInvoice.setSubTotal(36.000);
-        paidInvoice.setPreviousBalance(41.76);
-        paidInvoice.setPaymentAmount(41.76);
-        paidInvoice.setRemainingBalance(0.0);
+        paidInvoice.setSubTotal(new BigDecimal("36.000"));
+        paidInvoice.setPreviousBalance(new BigDecimal("41.76"));
+        paidInvoice.setPaymentAmount(new BigDecimal("41.76"));
+        paidInvoice.setRemainingBalance(new BigDecimal("0.0"));
         paidInvoice.setTaxObjectCode("02");
 
         // Impuestos de la factura pagada
@@ -1082,21 +1054,21 @@ public class InvoicesController {
         PaidInvoiceTax tax1 = new PaidInvoiceTax();
         tax1.setTaxCode("002");
         tax1.setTaxTypeCode("Tasa");
-        tax1.setTaxRate("0.160000");
+        tax1.setTaxRate(new BigDecimal("0.160000"));
         tax1.setTaxFlagCode("T");
         paidInvoiceTaxes.add(tax1);
 
         PaidInvoiceTax tax2 = new PaidInvoiceTax();
         tax2.setTaxCode("002");
         tax2.setTaxTypeCode("Tasa");
-        tax2.setTaxRate("0.106667");
+        tax2.setTaxRate(new BigDecimal("0.106667"));
         tax2.setTaxFlagCode("R");
         paidInvoiceTaxes.add(tax2);
 
         PaidInvoiceTax tax3 = new PaidInvoiceTax();
         tax3.setTaxCode("001");
         tax3.setTaxTypeCode("Tasa");
-        tax3.setTaxRate("0.100000");
+        tax3.setTaxRate(new BigDecimal("0.100000"));
         tax3.setTaxFlagCode("R");
         paidInvoiceTaxes.add(tax3);
 
@@ -1104,8 +1076,9 @@ public class InvoicesController {
         paidInvoices.add(paidInvoice);
         payment.setPaidInvoices(paidInvoices);
 
-        payments.add(payment);
-        invoice.setPayments(payments);
+        Complement complement = new Complement();
+        complement.setPayment(payment);
+        invoice.setComplement(complement);
 
         ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
         return apiResponse;
@@ -1160,26 +1133,13 @@ public class InvoicesController {
         recipient.setEmail("someone@somewhere.com");
         invoice.setRecipient(recipient);
 
-        // Ítem (Complemento de pago)
-        List<InvoiceItem> items = new ArrayList<>();
-        InvoiceItem item = new InvoiceItem();
-        item.setItemCode("84111506");
-        item.setQuantity(1.0);
-        item.setUnitOfMeasurementCode("ACT");
-        item.setDescription("Pago");
-        item.setUnitPrice(0.0);
-        item.setTaxObjectCode("01");
-        items.add(item);
-        invoice.setItems(items);
-
-        // Pagos
-        List<InvoicePayment> payments = new ArrayList<>();
+        // Complemento de pago
         InvoicePayment payment = new InvoicePayment();
-        payment.setPaymentDate(LocalDateTime.parse("2024-06-03T14:44:56"));
+        payment.setPaymentDate(OptUtil.parseLocalDateTime("2024-06-03T14:44:56"));
         payment.setPaymentFormCode("28");
         payment.setCurrencyCode("EUR");
-        payment.setExchangeRate(25.00);
-        payment.setAmount(100.00);
+        payment.setExchangeRate(new BigDecimal("25.00"));
+        payment.setAmount(new BigDecimal("100.00"));
         payment.setSourceBankTin("BSM970519DU8");
         payment.setSourceBankAccount("1234567891012131");
         payment.setTargetBankTin("BBA830831LJ2");
@@ -1192,12 +1152,12 @@ public class InvoicesController {
         paidInvoice.setSeries("F");
         paidInvoice.setNumber("2");
         paidInvoice.setCurrencyCode("USD");
-        paidInvoice.setEquivalence(1.160);
+        paidInvoice.setEquivalence(new BigDecimal("1.160"));
         paidInvoice.setPartialityNumber(1);
-        paidInvoice.setSubTotal(100.0);
-        paidInvoice.setPreviousBalance(116.00);
-        paidInvoice.setPaymentAmount(116.00);
-        paidInvoice.setRemainingBalance(0.0);
+        paidInvoice.setSubTotal(new BigDecimal("100.0"));
+        paidInvoice.setPreviousBalance(new BigDecimal("116.00"));
+        paidInvoice.setPaymentAmount(new BigDecimal("116.00"));
+        paidInvoice.setRemainingBalance(new BigDecimal("0.0"));
         paidInvoice.setTaxObjectCode("02");
 
         // Impuestos de la factura pagada
@@ -1206,21 +1166,21 @@ public class InvoicesController {
         PaidInvoiceTax tax1 = new PaidInvoiceTax();
         tax1.setTaxCode("002");
         tax1.setTaxTypeCode("Tasa");
-        tax1.setTaxRate("0.160000");
+        tax1.setTaxRate(new BigDecimal("0.160000"));
         tax1.setTaxFlagCode("T");
         paidInvoiceTaxes.add(tax1);
 
         PaidInvoiceTax tax2 = new PaidInvoiceTax();
         tax2.setTaxCode("002");
         tax2.setTaxTypeCode("Tasa");
-        tax2.setTaxRate("0.106667");
+        tax2.setTaxRate(new BigDecimal("0.106667"));
         tax2.setTaxFlagCode("R");
         paidInvoiceTaxes.add(tax2);
 
         PaidInvoiceTax tax3 = new PaidInvoiceTax();
         tax3.setTaxCode("001");
         tax3.setTaxTypeCode("Tasa");
-        tax3.setTaxRate("0.100000");
+        tax3.setTaxRate(new BigDecimal("0.100000"));
         tax3.setTaxFlagCode("R");
         paidInvoiceTaxes.add(tax3);
 
@@ -1228,8 +1188,9 @@ public class InvoicesController {
         paidInvoices.add(paidInvoice);
         payment.setPaidInvoices(paidInvoices);
 
-        payments.add(payment);
-        invoice.setPayments(payments);
+        Complement complement = new Complement();
+        complement.setPayment(payment);
+        invoice.setComplement(complement);
 
         ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
         return apiResponse;
@@ -1295,7 +1256,7 @@ public class InvoicesController {
         InvoiceStatusRequest request = new InvoiceStatusRequest();
         request.setIssuerTin("POPJ450924HD6");
         request.setRecipientTin("MEJJ940824C61");
-        request.setInvoiceTotal("430.00");
+        request.setInvoiceTotal(new BigDecimal("430.00"));
         request.setInvoiceUuid("8e0fdc23-e148-4cf5-b3ce-4459f31c9c45");
         request.setLast8DigitsIssuerSignature("oxPKRg==");
 
@@ -1383,6 +1344,408 @@ public class InvoicesController {
         InvoiceEmailRequest request = new InvoiceEmailRequest("904f5864-757e-4955-8a1e-58f55230c4bb", "soporte@fiscalapi.com");
 
         ApiResponse<Boolean> apiResponse = fiscalApi.getInvoiceService().send(request);
+        return apiResponse;
+    }
+
+    @PostMapping("/crear-factura-carta-porte")
+    @Operation(
+            summary = "Crear factura con complemento Carta Porte",
+            description = "Ejemplo de creación de factura con complemento Carta Porte (CartaPorte 3.1), datos hardcodeados en el controlador"
+    )
+    public ApiResponse<Invoice> crearFacturaCartaPorte() {
+
+        // Factura
+        Invoice invoice = new Invoice();
+        invoice.setVersionCode("4.0");
+        invoice.setTypeCode("I");
+        invoice.setSeries("SerieCCP31");
+        invoice.setDate(LocalDateTime.now());
+        invoice.setPaymentFormCode("01");
+        invoice.setPaymentMethodCode("PUE");
+        invoice.setCurrencyCode("MXN");
+        invoice.setExpeditionZipCode("42501");
+        invoice.setExchangeRate(new BigDecimal("1"));
+        invoice.setExportCode("01");
+
+        // Emisor (Escuela Kemper)
+        InvoiceIssuer issuer = new InvoiceIssuer();
+        issuer.setTin("EKU9003173C9");
+        issuer.setLegalName("ESCUELA KEMPER URGATE");
+        issuer.setTaxRegimeCode("601");
+
+        List<TaxCredential> credentials = new ArrayList<>();
+
+        TaxCredential cer = new TaxCredential();
+        cer.setBase64File(escuelaKemperBase64Cert);
+        cer.setFileType(0); // 0 = Certificado (.cer)
+        cer.setPassword(password);
+
+        TaxCredential key = new TaxCredential();
+        key.setBase64File(escuelaKemperBase64Key);
+        key.setFileType(1); // 1 = Clave privada (.key)
+        key.setPassword(password);
+
+        credentials.add(cer);
+        credentials.add(key);
+        issuer.setTaxCredentials(credentials);
+        invoice.setIssuer(issuer);
+
+        // Receptor
+        InvoiceRecipient recipient = new InvoiceRecipient();
+        recipient.setTin("URE180429TM6");
+        recipient.setLegalName("UNIVERSIDAD ROBOTICA ESPAÑOLA");
+        recipient.setZipCode("86991");
+        recipient.setTaxRegimeCode("601");
+        recipient.setCfdiUseCode("S01");
+        invoice.setRecipient(recipient);
+
+        // Conceptos
+        List<InvoiceItem> items = new ArrayList<>();
+        InvoiceItem item = new InvoiceItem();
+        item.setItemCode("78101800");
+        item.setItemSku("UT421511");
+        item.setQuantity(new BigDecimal("1"));
+        item.setUnitOfMeasurementCode("H87");
+        item.setDescription("Transporte de carga por carretera");
+        item.setUnitPrice(new BigDecimal("100.00"));
+        item.setDiscount(new BigDecimal("0"));
+        item.setTaxObjectCode("01");
+        item.setItemTaxes(new ArrayList<>());
+        items.add(item);
+        invoice.setItems(items);
+
+        // ─── Complemento Carta Porte ─────────────────────────────────────────
+        CartaPorte cartaPorte = new CartaPorte();
+        cartaPorte.setTranspInternacId("No");
+        cartaPorte.setTotalDistRec(new BigDecimal("1"));
+        cartaPorte.setRegistroISTMOId("Sí");
+        cartaPorte.setUbicacionPoloOrigenId("01");
+        cartaPorte.setUbicacionPoloDestinoId("01");
+        cartaPorte.setUnidadPesoId("XBX");
+        cartaPorte.setLogisticaInversaRecoleccionDevolucionId("Sí");
+
+        // Ubicaciones
+        List<Ubicacion> ubicaciones = new ArrayList<>();
+
+        // Origen
+        Domicilio domOrigen = new Domicilio();
+        domOrigen.setCalle("Calle1");
+        domOrigen.setNumeroExterior("211");
+        domOrigen.setNumeroInterior("212");
+        domOrigen.setColoniaId("1957");
+        domOrigen.setLocalidadId("13");
+        domOrigen.setReferencia("casa blanca");
+        domOrigen.setMunicipioId("011");
+        domOrigen.setEstadoId("CMX");
+        domOrigen.setPaisId("MEX");
+        domOrigen.setCodigoPostalId("13250");
+
+        Ubicacion origen = new Ubicacion();
+        origen.setTipoUbicacion("Origen");
+        origen.setIdUbicacion("OR101010");
+        origen.setRfcRemitenteDestinatario("URE180429TM6");
+        origen.setNombreRemitenteDestinatario("NombreRemitenteDestinatario1");
+        origen.setFechaHoraSalidaLlegada(OptUtil.parseLocalDateTime("2023-08-01T00:00:00"));
+        origen.setDomicilio(domOrigen);
+        ubicaciones.add(origen);
+
+        // Destino
+        Domicilio domDestino = new Domicilio();
+        domDestino.setCalle("Calle2");
+        domDestino.setNumeroExterior("214");
+        domDestino.setNumeroInterior("215");
+        domDestino.setColoniaId("0347");
+        domDestino.setLocalidadId("23");
+        domDestino.setReferencia("casa negra");
+        domDestino.setMunicipioId("004");
+        domDestino.setEstadoId("COA");
+        domDestino.setPaisId("MEX");
+        domDestino.setCodigoPostalId("25350");
+
+        Ubicacion destino = new Ubicacion();
+        destino.setTipoUbicacion("Destino");
+        destino.setIdUbicacion("DE202020");
+        destino.setRfcRemitenteDestinatario("URE180429TM6");
+        destino.setNombreRemitenteDestinatario("NombreRemitenteDestinatario2");
+        destino.setFechaHoraSalidaLlegada(OptUtil.parseLocalDateTime("2023-08-01T00:00:01"));
+        destino.setDistanciaRecorrida(new BigDecimal("1"));
+        destino.setDomicilio(domDestino);
+        ubicaciones.add(destino);
+
+        cartaPorte.setUbicaciones(ubicaciones);
+
+        // Mercancias
+        CantidadTransporta cantTransporta = new CantidadTransporta();
+        cantTransporta.setCantidad(new BigDecimal("1"));
+        cantTransporta.setIdOrigen("OR101010");
+        cantTransporta.setIdDestino("DE202020");
+
+        Mercancia mercancia = new Mercancia();
+        mercancia.setBienesTranspId("11121900");
+        mercancia.setDescripcion("Accesorios de equipo de telefonía");
+        mercancia.setCantidad(new BigDecimal("1.0"));
+        mercancia.setClaveUnidadId("XBX");
+        mercancia.setMaterialPeligrosoId("No");
+        mercancia.setDenominacionGenericaProd("DenominacionGenericaProd1");
+        mercancia.setDenominacionDistintivaProd("DenominacionDistintivaProd1");
+        mercancia.setFabricante("Fabricante1");
+        mercancia.setFechaCaducidad(OptUtil.parseLocalDateTime("2003-04-02T00:00:00"));
+        mercancia.setLoteMedicamento("LoteMedic1");
+        mercancia.setFormaFarmaceuticaId("01");
+        mercancia.setCondicionesEspTranspId("01");
+        mercancia.setRegistroSanitarioFolioAutorizacion("RegistroSanita1");
+        mercancia.setPesoEnKg(new BigDecimal("1"));
+        mercancia.setFraccionArancelariaId("6309000100");
+
+        List<CantidadTransporta> cantidades = new ArrayList<>();
+        cantidades.add(cantTransporta);
+        mercancia.setCantidadTransporta(cantidades);
+
+        List<Mercancia> mercancias = new ArrayList<>();
+        mercancias.add(mercancia);
+        cartaPorte.setMercancias(mercancias);
+
+        // Autotransporte
+        Remolque remolque = new Remolque();
+        remolque.setSubTipoRemId("CTR004");
+        remolque.setPlaca("VL45K98");
+
+        Autotransporte autotransporte = new Autotransporte();
+        autotransporte.setPermSCTId("TPAF01");
+        autotransporte.setNumPermisoSCT("NumPermisoSCT1");
+        autotransporte.setConfigVehicularId("VL");
+        autotransporte.setPesoBrutoVehicular(new BigDecimal("1"));
+        autotransporte.setPlacaVM("plac892");
+        autotransporte.setAnioModeloVM(2020);
+        autotransporte.setAseguraRespCivil("AseguraRespCivil");
+        autotransporte.setPolizaRespCivil("123456789");
+
+        List<Remolque> remolques = new ArrayList<>();
+        remolques.add(remolque);
+        autotransporte.setRemolques(remolques);
+
+        cartaPorte.setAutotransporte(autotransporte);
+
+        // Tipos de figura
+        Domicilio domFigura = new Domicilio();
+        domFigura.setCalle("Calle1");
+        domFigura.setNumeroExterior("NumeroExterior1");
+        domFigura.setNumeroInterior("NumeroInterior1");
+        domFigura.setColoniaId("Colonia1");
+        domFigura.setLocalidadId("Localidad1");
+        domFigura.setReferencia("Referencia1");
+        domFigura.setMunicipioId("Municipio1");
+        domFigura.setEstadoId("Estado1");
+        domFigura.setPaisId("AFG");
+        domFigura.setCodigoPostalId("CodigoPosta1");
+
+        TipoFigura figura = new TipoFigura();
+        figura.setTipoFiguraId("01");
+        figura.setRfcFigura("URE180429TM6");
+        figura.setNumLicencia("NumLicencia1");
+        figura.setNombreFigura("NombreFigura1");
+        figura.setDomicilio(domFigura);
+
+        List<TipoFigura> tiposFigura = new ArrayList<>();
+        tiposFigura.add(figura);
+        cartaPorte.setTiposFigura(tiposFigura);
+
+        // Asignar CartaPorte al complemento y el complemento a la factura
+        Complement complement = new Complement();
+        complement.setCartaPorte(cartaPorte);
+        invoice.setComplement(complement);
+
+        ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
+        return apiResponse;
+    }
+
+@PostMapping("/crear-factura-carta-porte-referencias")
+    @Operation(
+            summary = "Crear factura con complemento Carta Porte por referencias",
+            description = "Ejemplo de creación de factura con complemento Carta Porte (CartaPorte 3.1), datos hardcodeados en el controlador"
+    )
+    public ApiResponse<Invoice> crearFacturaCartaPortePorReferencias() {
+
+        // Factura
+        Invoice invoice = new Invoice();
+        invoice.setVersionCode("4.0");
+        invoice.setTypeCode("I");
+        invoice.setSeries("SerieCCP31");
+        invoice.setDate(LocalDateTime.now());
+        invoice.setPaymentFormCode("01");
+        invoice.setPaymentMethodCode("PUE");
+        invoice.setCurrencyCode("MXN");
+        invoice.setExpeditionZipCode("42501");
+        invoice.setExchangeRate(new BigDecimal("1"));
+        invoice.setExportCode("01");
+
+        // Emisor (Escuela Kemper)
+        InvoiceIssuer issuer = new InvoiceIssuer();
+        issuer.setId("0e82a655-5f0c-4e07-abab-8f322e4123ef");
+        invoice.setIssuer(issuer);
+
+        // Receptor
+        InvoiceRecipient recipient = new InvoiceRecipient();
+        recipient.setId("37f7c342-d9a6-4881-9620-0da769b50ce5");
+        invoice.setRecipient(recipient);
+
+        // Conceptos
+        List<InvoiceItem> items = new ArrayList<>();
+        InvoiceItem item = new InvoiceItem();
+        item.setItemCode("78101800");
+        item.setItemSku("UT421511");
+        item.setQuantity(new BigDecimal("1"));
+        item.setUnitOfMeasurementCode("H87");
+        item.setDescription("Transporte de carga por carretera");
+        item.setUnitPrice(new BigDecimal("100.00"));
+        item.setDiscount(new BigDecimal("0"));
+        item.setTaxObjectCode("01");
+        item.setItemTaxes(new ArrayList<>());
+        items.add(item);
+        invoice.setItems(items);
+
+        // ─── Complemento Carta Porte ─────────────────────────────────────────
+        CartaPorte cartaPorte = new CartaPorte();
+        cartaPorte.setTranspInternacId("No");
+        cartaPorte.setTotalDistRec(new BigDecimal("1"));
+        cartaPorte.setRegistroISTMOId("Sí");
+        cartaPorte.setUbicacionPoloOrigenId("01");
+        cartaPorte.setUbicacionPoloDestinoId("01");
+        cartaPorte.setUnidadPesoId("XBX");
+        cartaPorte.setLogisticaInversaRecoleccionDevolucionId("Sí");
+
+        // Ubicaciones
+        List<Ubicacion> ubicaciones = new ArrayList<>();
+
+        // Origen
+        Domicilio domOrigen = new Domicilio();
+        domOrigen.setCalle("Calle1");
+        domOrigen.setNumeroExterior("211");
+        domOrigen.setNumeroInterior("212");
+        domOrigen.setColoniaId("1957");
+        domOrigen.setLocalidadId("13");
+        domOrigen.setReferencia("casa blanca");
+        domOrigen.setMunicipioId("011");
+        domOrigen.setEstadoId("CMX");
+        domOrigen.setPaisId("MEX");
+        domOrigen.setCodigoPostalId("13250");
+
+        Ubicacion origen = new Ubicacion();
+        origen.setTipoUbicacion("Origen");
+        origen.setIdUbicacion("OR101010");
+        origen.setRfcRemitenteDestinatario("URE180429TM6");
+        origen.setNombreRemitenteDestinatario("NombreRemitenteDestinatario1");
+        origen.setFechaHoraSalidaLlegada(OptUtil.parseLocalDateTime("2023-08-01T00:00:00"));
+        origen.setDomicilio(domOrigen);
+        ubicaciones.add(origen);
+
+        // Destino
+        Domicilio domDestino = new Domicilio();
+        domDestino.setCalle("Calle2");
+        domDestino.setNumeroExterior("214");
+        domDestino.setNumeroInterior("215");
+        domDestino.setColoniaId("0347");
+        domDestino.setLocalidadId("23");
+        domDestino.setReferencia("casa negra");
+        domDestino.setMunicipioId("004");
+        domDestino.setEstadoId("COA");
+        domDestino.setPaisId("MEX");
+        domDestino.setCodigoPostalId("25350");
+
+        Ubicacion destino = new Ubicacion();
+        destino.setTipoUbicacion("Destino");
+        destino.setIdUbicacion("DE202020");
+        destino.setRfcRemitenteDestinatario("URE180429TM6");
+        destino.setNombreRemitenteDestinatario("NombreRemitenteDestinatario2");
+        destino.setFechaHoraSalidaLlegada(OptUtil.parseLocalDateTime("2023-08-01T00:00:01"));
+        destino.setDistanciaRecorrida(new BigDecimal("1"));
+        destino.setDomicilio(domDestino);
+        ubicaciones.add(destino);
+
+        cartaPorte.setUbicaciones(ubicaciones);
+
+        // Mercancias
+        CantidadTransporta cantTransporta = new CantidadTransporta();
+        cantTransporta.setCantidad(new BigDecimal("1"));
+        cantTransporta.setIdOrigen("OR101010");
+        cantTransporta.setIdDestino("DE202020");
+
+        Mercancia mercancia = new Mercancia();
+        mercancia.setBienesTranspId("11121900");
+        mercancia.setDescripcion("Accesorios de equipo de telefonía");
+        mercancia.setCantidad(new BigDecimal("1.0"));
+        mercancia.setClaveUnidadId("XBX");
+        mercancia.setMaterialPeligrosoId("No");
+        mercancia.setDenominacionGenericaProd("DenominacionGenericaProd1");
+        mercancia.setDenominacionDistintivaProd("DenominacionDistintivaProd1");
+        mercancia.setFabricante("Fabricante1");
+        mercancia.setFechaCaducidad(OptUtil.parseLocalDateTime("2003-04-02T00:00:00"));
+        mercancia.setLoteMedicamento("LoteMedic1");
+        mercancia.setFormaFarmaceuticaId("01");
+        mercancia.setCondicionesEspTranspId("01");
+        mercancia.setRegistroSanitarioFolioAutorizacion("RegistroSanita1");
+        mercancia.setPesoEnKg(new BigDecimal("1"));
+        mercancia.setFraccionArancelariaId("6309000100");
+
+        List<CantidadTransporta> cantidades = new ArrayList<>();
+        cantidades.add(cantTransporta);
+        mercancia.setCantidadTransporta(cantidades);
+
+        List<Mercancia> mercancias = new ArrayList<>();
+        mercancias.add(mercancia);
+        cartaPorte.setMercancias(mercancias);
+
+        // Autotransporte
+        Remolque remolque = new Remolque();
+        remolque.setSubTipoRemId("CTR004");
+        remolque.setPlaca("VL45K98");
+
+        Autotransporte autotransporte = new Autotransporte();
+        autotransporte.setPermSCTId("TPAF01");
+        autotransporte.setNumPermisoSCT("NumPermisoSCT1");
+        autotransporte.setConfigVehicularId("VL");
+        autotransporte.setPesoBrutoVehicular(new BigDecimal("1"));
+        autotransporte.setPlacaVM("plac892");
+        autotransporte.setAnioModeloVM(2020);
+        autotransporte.setAseguraRespCivil("AseguraRespCivil");
+        autotransporte.setPolizaRespCivil("123456789");
+
+        List<Remolque> remolques = new ArrayList<>();
+        remolques.add(remolque);
+        autotransporte.setRemolques(remolques);
+
+        cartaPorte.setAutotransporte(autotransporte);
+
+        // Tipos de figura
+        Domicilio domFigura = new Domicilio();
+        domFigura.setCalle("Calle1");
+        domFigura.setNumeroExterior("NumeroExterior1");
+        domFigura.setNumeroInterior("NumeroInterior1");
+        domFigura.setColoniaId("Colonia1");
+        domFigura.setLocalidadId("Localidad1");
+        domFigura.setReferencia("Referencia1");
+        domFigura.setMunicipioId("Municipio1");
+        domFigura.setEstadoId("Estado1");
+        domFigura.setPaisId("AFG");
+        domFigura.setCodigoPostalId("CodigoPosta1");
+
+        TipoFigura figura = new TipoFigura();
+        figura.setTipoFiguraId("01");
+        figura.setRfcFigura("URE180429TM6");
+        figura.setNumLicencia("NumLicencia1");
+        figura.setNombreFigura("NombreFigura1");
+        figura.setDomicilio(domFigura);
+
+        List<TipoFigura> tiposFigura = new ArrayList<>();
+        tiposFigura.add(figura);
+        cartaPorte.setTiposFigura(tiposFigura);
+
+        // Asignar CartaPorte al complemento y el complemento a la factura
+        Complement complement = new Complement();
+        complement.setCartaPorte(cartaPorte);
+        invoice.setComplement(complement);
+
+        ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
         return apiResponse;
     }
 

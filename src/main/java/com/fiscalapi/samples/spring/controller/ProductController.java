@@ -46,6 +46,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class ProductController {
 
         Product product = new Product();
         product.setDescription("Libro de Spring sin impuestos");
-        product.setUnitPrice(100.75986);
+        product.setUnitPrice(new BigDecimal("100.50"));
         ApiResponse<Product> apiResponse = productService.createProduct(product);
 
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -81,7 +82,7 @@ public class ProductController {
         Product product = new Product();
         product.setId("2c6aafcf-8cd2-4fb1-94a8-687adc671380");
         product.setDescription("Libro de Spring con Impuestos");
-        product.setUnitPrice(150.75);
+        product.setUnitPrice(new BigDecimal("150.75"));
         product.setSatUnitMeasurementId("H87"); // Clave Unidad de medida SAT (Pieza)
         product.setSatProductCodeId("81111602"); // Clave producto SAT libros
         product.setSatTaxObjectId("02"); // Si objeto de impuesto
@@ -91,13 +92,13 @@ public class ProductController {
 
         ProductTax iva16 = new ProductTax();
         iva16.setTaxId("002"); // IVA
-        iva16.setRate(0.160000); // 16%
+        iva16.setRate(new BigDecimal("0.160000")); // 16%
         iva16.setTaxTypeId("Tasa"); //Tasa
         iva16.setTaxFlagId("T"); // Traslado
 
         ProductTax iva1067 = new ProductTax(); // Retención 2/3 partes iva
         iva1067.setTaxId("002");
-        iva1067.setRate(0.010667);
+        iva1067.setRate(new BigDecimal("0.010667"));
         iva1067.setTaxTypeId("Tasa");
         iva1067.setTaxFlagId("T");
 
