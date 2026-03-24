@@ -43,6 +43,7 @@ import com.fiscalapi.models.invoicing.billOfLading.*;
 import com.fiscalapi.models.invoicing.paymentComplement.InvoicePayment;
 import com.fiscalapi.models.invoicing.paymentComplement.PaidInvoice;
 import com.fiscalapi.models.invoicing.paymentComplement.PaidInvoiceTax;
+import com.fiscalapi.models.invoicing.payroll.*;
 import com.fiscalapi.services.FiscalApiClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -1743,6 +1744,359 @@ public class InvoicesController {
         // Asignar CartaPorte al complemento y el complemento a la factura
         Complement complement = new Complement();
         complement.setCartaPorte(cartaPorte);
+        invoice.setComplement(complement);
+
+        ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
+        return apiResponse;
+    }
+
+    @PostMapping("/crear-complement-nomina")
+    @Operation(
+            summary = "Crear complemento de nómina",
+            description = "Ejemplo de creación de CFDI de nómina (tipo N) con complemento de nómina versión 1.2"
+    )
+    public ApiResponse<Invoice> crearNominaComplemento() {
+        // Factura
+        Invoice invoice = new Invoice();
+        invoice.setVersionCode("4.0");
+        invoice.setSeries("F");
+        invoice.setDate(LocalDateTime.now());
+        invoice.setPaymentMethodCode("PUE");
+        invoice.setCurrencyCode("MXN");
+        invoice.setTypeCode("N");
+        invoice.setExpeditionZipCode("20000");
+        invoice.setExportCode("01");
+
+        // Emisor
+        InvoiceIssuer issuer = new InvoiceIssuer();
+        issuer.setTin("EKU9003173C9");
+        issuer.setLegalName("ESCUELA KEMPER URGATE");
+        issuer.setTaxRegimeCode("601");
+
+        EmployerData employerData = new EmployerData();
+        employerData.setEmployerRegistration("B5510768108");
+        issuer.setEmployerData(employerData);
+
+        List<TaxCredential> credentials = new ArrayList<>();
+        TaxCredential cer = new TaxCredential();
+        cer.setBase64File(escuelaKemperBase64Cert);
+        cer.setFileType(0);
+        cer.setPassword(password);
+        TaxCredential key = new TaxCredential();
+        key.setBase64File(escuelaKemperBase64Key);
+        key.setFileType(1);
+        key.setPassword(password);
+        credentials.add(cer);
+        credentials.add(key);
+        issuer.setTaxCredentials(credentials);
+        invoice.setIssuer(issuer);
+
+        // Receptor
+        InvoiceRecipient recipient = new InvoiceRecipient();
+        recipient.setTin("FUNK671228PH6");
+        recipient.setLegalName("KARLA FUENTE NOLASCO");
+        recipient.setZipCode("01160");
+        recipient.setTaxRegimeCode("605");
+        recipient.setCfdiUseCode("CN01");
+
+        EmployeeData employeeData = new EmployeeData();
+        employeeData.setCurp("XEXX010101MNEXXXA8");
+        employeeData.setSocialSecurityNumber("04078873454");
+        employeeData.setLaborRelationStartDate(OptUtil.parseLocalDateTime("2024-08-18T00:00:00"));
+        employeeData.setSeniority("P54W");
+        employeeData.setSatContractTypeId("01");
+        employeeData.setSatTaxRegimeTypeId("02");
+        employeeData.setEmployeeNumber("123456789");
+        employeeData.setDepartment("GenAI");
+        employeeData.setPosition("Sr Software Engineer");
+        employeeData.setSatJobRiskId("1");
+        employeeData.setSatPaymentPeriodicityId("05");
+        employeeData.setSatBankId("012");
+        employeeData.setBaseSalaryForContributions(new BigDecimal("2828.50"));
+        employeeData.setIntegratedDailySalary(new BigDecimal("0.00"));
+        employeeData.setSatPayrollStateId("JAL");
+        recipient.setEmployeeData(employeeData);
+        invoice.setRecipient(recipient);
+
+        // Percepciones
+        List<PayrollEarning> earningList = new ArrayList<>();
+
+        PayrollEarning e1 = new PayrollEarning();
+        e1.setEarningTypeCode("001");
+        e1.setCode("1003");
+        e1.setConcept("Sueldo Nominal");
+        e1.setTaxedAmount(new BigDecimal("95030.00"));
+        e1.setExemptAmount(new BigDecimal("0.00"));
+        earningList.add(e1);
+
+        PayrollEarning e2 = new PayrollEarning();
+        e2.setEarningTypeCode("005");
+        e2.setCode("5913");
+        e2.setConcept("Fondo de Ahorro Aportación Patrón");
+        e2.setTaxedAmount(new BigDecimal("0.00"));
+        e2.setExemptAmount(new BigDecimal("4412.46"));
+        earningList.add(e2);
+
+        PayrollEarning e3 = new PayrollEarning();
+        e3.setEarningTypeCode("038");
+        e3.setCode("1885");
+        e3.setConcept("Bono Ingles");
+        e3.setTaxedAmount(new BigDecimal("14254.50"));
+        e3.setExemptAmount(new BigDecimal("0.00"));
+        earningList.add(e3);
+
+        PayrollEarning e4 = new PayrollEarning();
+        e4.setEarningTypeCode("029");
+        e4.setCode("1941");
+        e4.setConcept("Vales Despensa");
+        e4.setTaxedAmount(new BigDecimal("0.00"));
+        e4.setExemptAmount(new BigDecimal("3439.00"));
+        earningList.add(e4);
+
+        PayrollEarning e5 = new PayrollEarning();
+        e5.setEarningTypeCode("038");
+        e5.setCode("1824");
+        e5.setConcept("Herramientas Teletrabajo (telecom y prop. electri)");
+        e5.setTaxedAmount(new BigDecimal("273.00"));
+        e5.setExemptAmount(new BigDecimal("0.00"));
+        earningList.add(e5);
+
+        // Otros pagos
+        List<PayrollEarningOtherPayment> otherPayments = new ArrayList<>();
+        PayrollEarningOtherPayment op = new PayrollEarningOtherPayment();
+        op.setOtherPaymentTypeCode("002");
+        op.setCode("5050");
+        op.setConcept("Exceso de subsidio al empleo");
+        op.setAmount(new BigDecimal("0.00"));
+        op.setSubsidyCaused(new BigDecimal("0.00"));
+        otherPayments.add(op);
+
+        PayrollEarnings earnings = new PayrollEarnings();
+        earnings.setEarnings(earningList);
+        earnings.setOtherPayments(otherPayments);
+
+        // Deducciones
+        List<PayrollDeduction> deductions = new ArrayList<>();
+
+        PayrollDeduction d1 = new PayrollDeduction();
+        d1.setDeductionTypeCode("002");
+        d1.setCode("5003");
+        d1.setConcept("ISR Causado");
+        d1.setAmount(new BigDecimal("27645.52"));
+        deductions.add(d1);
+
+        PayrollDeduction d2 = new PayrollDeduction();
+        d2.setDeductionTypeCode("004");
+        d2.setCode("5910");
+        d2.setConcept("Fondo de ahorro Empleado Inversión");
+        d2.setAmount(new BigDecimal("4412.46"));
+        deductions.add(d2);
+
+        PayrollDeduction d3 = new PayrollDeduction();
+        d3.setDeductionTypeCode("004");
+        d3.setCode("5914");
+        d3.setConcept("Fondo de Ahorro Patrón Inversión");
+        d3.setAmount(new BigDecimal("4412.46"));
+        deductions.add(d3);
+
+        PayrollDeduction d4 = new PayrollDeduction();
+        d4.setDeductionTypeCode("004");
+        d4.setCode("1966");
+        d4.setConcept("Contribución póliza exceso GMM");
+        d4.setAmount(new BigDecimal("519.91"));
+        deductions.add(d4);
+
+        PayrollDeduction d5 = new PayrollDeduction();
+        d5.setDeductionTypeCode("004");
+        d5.setCode("1934");
+        d5.setConcept("Descuento Vales Despensa");
+        d5.setAmount(new BigDecimal("1.00"));
+        deductions.add(d5);
+
+        PayrollDeduction d6 = new PayrollDeduction();
+        d6.setDeductionTypeCode("004");
+        d6.setCode("1942");
+        d6.setConcept("Vales Despensa Electrónico");
+        d6.setAmount(new BigDecimal("3439.00"));
+        deductions.add(d6);
+
+        PayrollDeduction d7 = new PayrollDeduction();
+        d7.setDeductionTypeCode("001");
+        d7.setCode("1895");
+        d7.setConcept("IMSS");
+        d7.setAmount(new BigDecimal("2391.13"));
+        deductions.add(d7);
+
+        // Nómina
+        Payroll payroll = new Payroll();
+        payroll.setVersion("1.2");
+        payroll.setPayrollTypeCode("O");
+        payroll.setPaymentDate(OptUtil.parseLocalDateTime("2025-08-30T00:00:00"));
+        payroll.setInitialPaymentDate(OptUtil.parseLocalDateTime("2025-07-31T00:00:00"));
+        payroll.setFinalPaymentDate(OptUtil.parseLocalDateTime("2025-08-30T00:00:00"));
+        payroll.setDaysPaid(30);
+        payroll.setEarnings(earnings);
+        payroll.setDeductions(deductions);
+
+        // Complemento
+        Complement complement = new Complement();
+        complement.setPayroll(payroll);
+        invoice.setComplement(complement);
+
+        ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
+        return apiResponse;
+    }
+
+    @PostMapping("/crear-complemento-nomina-por-referencias")
+    @Operation(
+            summary = "Crear complemento de nómina por referencias",
+            description = "Ejemplo de creación de CFDI de nómina (tipo N) con complemento de nómina versión 1.2"
+    )
+    public ApiResponse<Invoice> crearNominaComplementoPorReferencias() {
+        // Factura
+        Invoice invoice = new Invoice();
+        invoice.setVersionCode("4.0");
+        invoice.setSeries("F");
+        invoice.setDate(LocalDateTime.now());
+        invoice.setPaymentMethodCode("PUE");
+        invoice.setCurrencyCode("MXN");
+        invoice.setTypeCode("N");
+        invoice.setExpeditionZipCode("20000");
+        invoice.setExportCode("01");
+
+        // Emisor
+        InvoiceIssuer issuer = new InvoiceIssuer();
+        issuer.setId("0e82a655-5f0c-4e07-abab-8f322e4123ef");
+        invoice.setIssuer(issuer);
+
+        // Receptor
+        InvoiceRecipient recipient = new InvoiceRecipient();
+        recipient.setId("da71df0c-f328-45ee-9bd9-3096ed02c164");
+        invoice.setRecipient(recipient);
+
+        // Percepciones
+        List<PayrollEarning> earningList = new ArrayList<>();
+
+        PayrollEarning e1 = new PayrollEarning();
+        e1.setEarningTypeCode("001");
+        e1.setCode("1003");
+        e1.setConcept("Sueldo Nominal");
+        e1.setTaxedAmount(new BigDecimal("95030.00"));
+        e1.setExemptAmount(new BigDecimal("0.00"));
+        earningList.add(e1);
+
+        PayrollEarning e2 = new PayrollEarning();
+        e2.setEarningTypeCode("005");
+        e2.setCode("5913");
+        e2.setConcept("Fondo de Ahorro Aportación Patrón");
+        e2.setTaxedAmount(new BigDecimal("0.00"));
+        e2.setExemptAmount(new BigDecimal("4412.46"));
+        earningList.add(e2);
+
+        PayrollEarning e3 = new PayrollEarning();
+        e3.setEarningTypeCode("038");
+        e3.setCode("1885");
+        e3.setConcept("Bono Ingles");
+        e3.setTaxedAmount(new BigDecimal("14254.50"));
+        e3.setExemptAmount(new BigDecimal("0.00"));
+        earningList.add(e3);
+
+        PayrollEarning e4 = new PayrollEarning();
+        e4.setEarningTypeCode("029");
+        e4.setCode("1941");
+        e4.setConcept("Vales Despensa");
+        e4.setTaxedAmount(new BigDecimal("0.00"));
+        e4.setExemptAmount(new BigDecimal("3439.00"));
+        earningList.add(e4);
+
+        PayrollEarning e5 = new PayrollEarning();
+        e5.setEarningTypeCode("038");
+        e5.setCode("1824");
+        e5.setConcept("Herramientas Teletrabajo (telecom y prop. electri)");
+        e5.setTaxedAmount(new BigDecimal("273.00"));
+        e5.setExemptAmount(new BigDecimal("0.00"));
+        earningList.add(e5);
+
+        // Otros pagos
+        List<PayrollEarningOtherPayment> otherPayments = new ArrayList<>();
+        PayrollEarningOtherPayment op = new PayrollEarningOtherPayment();
+        op.setOtherPaymentTypeCode("002");
+        op.setCode("5050");
+        op.setConcept("Exceso de subsidio al empleo");
+        op.setAmount(new BigDecimal("0.00"));
+        op.setSubsidyCaused(new BigDecimal("0.00"));
+        otherPayments.add(op);
+
+        PayrollEarnings earnings = new PayrollEarnings();
+        earnings.setEarnings(earningList);
+        earnings.setOtherPayments(otherPayments);
+
+        // Deducciones
+        List<PayrollDeduction> deductions = new ArrayList<>();
+
+        PayrollDeduction d1 = new PayrollDeduction();
+        d1.setDeductionTypeCode("002");
+        d1.setCode("5003");
+        d1.setConcept("ISR Causado");
+        d1.setAmount(new BigDecimal("27645.52"));
+        deductions.add(d1);
+
+        PayrollDeduction d2 = new PayrollDeduction();
+        d2.setDeductionTypeCode("004");
+        d2.setCode("5910");
+        d2.setConcept("Fondo de ahorro Empleado Inversión");
+        d2.setAmount(new BigDecimal("4412.46"));
+        deductions.add(d2);
+
+        PayrollDeduction d3 = new PayrollDeduction();
+        d3.setDeductionTypeCode("004");
+        d3.setCode("5914");
+        d3.setConcept("Fondo de Ahorro Patrón Inversión");
+        d3.setAmount(new BigDecimal("4412.46"));
+        deductions.add(d3);
+
+        PayrollDeduction d4 = new PayrollDeduction();
+        d4.setDeductionTypeCode("004");
+        d4.setCode("1966");
+        d4.setConcept("Contribución póliza exceso GMM");
+        d4.setAmount(new BigDecimal("519.91"));
+        deductions.add(d4);
+
+        PayrollDeduction d5 = new PayrollDeduction();
+        d5.setDeductionTypeCode("004");
+        d5.setCode("1934");
+        d5.setConcept("Descuento Vales Despensa");
+        d5.setAmount(new BigDecimal("1.00"));
+        deductions.add(d5);
+
+        PayrollDeduction d6 = new PayrollDeduction();
+        d6.setDeductionTypeCode("004");
+        d6.setCode("1942");
+        d6.setConcept("Vales Despensa Electrónico");
+        d6.setAmount(new BigDecimal("3439.00"));
+        deductions.add(d6);
+
+        PayrollDeduction d7 = new PayrollDeduction();
+        d7.setDeductionTypeCode("001");
+        d7.setCode("1895");
+        d7.setConcept("IMSS");
+        d7.setAmount(new BigDecimal("2391.13"));
+        deductions.add(d7);
+
+        // Nómina
+        Payroll payroll = new Payroll();
+        payroll.setVersion("1.2");
+        payroll.setPayrollTypeCode("O");
+        payroll.setPaymentDate(OptUtil.parseLocalDateTime("2025-08-30T00:00:00"));
+        payroll.setInitialPaymentDate(OptUtil.parseLocalDateTime("2025-07-31T00:00:00"));
+        payroll.setFinalPaymentDate(OptUtil.parseLocalDateTime("2025-08-30T00:00:00"));
+        payroll.setDaysPaid(30);
+        payroll.setEarnings(earnings);
+        payroll.setDeductions(deductions);
+
+        // Complemento
+        Complement complement = new Complement();
+        complement.setPayroll(payroll);
         invoice.setComplement(complement);
 
         ApiResponse<Invoice> apiResponse = fiscalApi.getInvoiceService().create(invoice);
