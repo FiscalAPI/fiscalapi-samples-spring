@@ -1429,7 +1429,7 @@ public class InvoicesController {
         List<Ubicacion> ubicaciones = new ArrayList<>();
 
         // Origen
-        Domicilio domOrigen = new Domicilio();
+        UbicacionDomicilio domOrigen = new UbicacionDomicilio();
         domOrigen.setCalle("Calle1");
         domOrigen.setNumeroExterior("211");
         domOrigen.setNumeroInterior("212");
@@ -1451,7 +1451,7 @@ public class InvoicesController {
         ubicaciones.add(origen);
 
         // Destino
-        Domicilio domDestino = new Domicilio();
+        UbicacionDomicilio domDestino = new UbicacionDomicilio();
         domDestino.setCalle("Calle2");
         domDestino.setNumeroExterior("214");
         domDestino.setNumeroInterior("215");
@@ -1528,7 +1528,7 @@ public class InvoicesController {
         cartaPorte.setAutotransporte(autotransporte);
 
         // Tipos de figura
-        Domicilio domFigura = new Domicilio();
+        TipoFiguraDomicilio domFigura = new TipoFiguraDomicilio();
         domFigura.setCalle("Calle1");
         domFigura.setNumeroExterior("NumeroExterior1");
         domFigura.setNumeroInterior("NumeroInterior1");
@@ -1619,7 +1619,7 @@ public class InvoicesController {
         List<Ubicacion> ubicaciones = new ArrayList<>();
 
         // Origen
-        Domicilio domOrigen = new Domicilio();
+        UbicacionDomicilio domOrigen = new UbicacionDomicilio();
         domOrigen.setCalle("Calle1");
         domOrigen.setNumeroExterior("211");
         domOrigen.setNumeroInterior("212");
@@ -1641,7 +1641,7 @@ public class InvoicesController {
         ubicaciones.add(origen);
 
         // Destino
-        Domicilio domDestino = new Domicilio();
+        UbicacionDomicilio domDestino = new UbicacionDomicilio();
         domDestino.setCalle("Calle2");
         domDestino.setNumeroExterior("214");
         domDestino.setNumeroInterior("215");
@@ -1718,7 +1718,7 @@ public class InvoicesController {
         cartaPorte.setAutotransporte(autotransporte);
 
         // Tipos de figura
-        Domicilio domFigura = new Domicilio();
+        TipoFiguraDomicilio domFigura = new TipoFiguraDomicilio();
         domFigura.setCalle("Calle1");
         domFigura.setNumeroExterior("NumeroExterior1");
         domFigura.setNumeroInterior("NumeroInterior1");
